@@ -15,6 +15,7 @@
 body{
     width: 100vw;
     background: rgb(247, 247, 247);
+    overflow: hidden;
 }
 
 p{
@@ -76,11 +77,11 @@ h2, .search, .sidebar h3, .sidebar p{
 main{
     display: flex;
     width: 100%;
+    justify-content: center;
 }
 
 .sidebar{
     width: 20%;
-    background: red;
 }
 
 .main-header, .card{
@@ -95,6 +96,41 @@ main{
     background: white;
     padding: 5px;
     height: 150px;
-    border: 1px solid rgba(197, 197, 197, 0.507);
-    box-shadow: 0 .2rem 1rem .2rem rgba(150, 150, 150, 0.185);
+    border: 1px solid rgba(170, 170, 170, 0.507);
+    box-shadow: 0 2px .5rem .1rem rgba(180, 180, 180, 0.322);
+}
+
+.news-feed{
+    background: white;
+    box-shadow: 0 .1rem 1rem .2rem rgba(150, 150, 150, 0.185);
+    margin: 10px;
+}
+
+.container{
+    overflow: auto;
+    display: grid;
+    height: 80vh;
+}
+
+.pages{
+    margin: 10px;
+}
+
+.pages button{
+    background: black;
+    color: white;
+    margin-top: 10px;
+    height: 50px;
+    width: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    text-align: center;
+    border: none;
+}
+
+#pages{
+    display: flex;
+    gap: 1rem;
 }
