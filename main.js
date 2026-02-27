@@ -149,6 +149,7 @@ const posButtonsHandler = (e) =>{
                     return;
                 }
                 getRecentCvesAndDisplay(pageNumber*20)
+
             }else if (mode === 'search'){
                 if(pageNumber === 0){
                 getSearchResultsAndDisplay(0)
@@ -176,6 +177,4 @@ searchbtn.addEventListener('click', (e)=>{
     getSearchResultsAndDisplay(0)
     
 })
-
-
 //news section
