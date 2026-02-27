@@ -14,6 +14,11 @@ function paginate(resultsPerPage ,startpage, URL){
 
 
 const getRecent = async (req, res)=>{
+
+    const { page } = req.query
+
+    if(page === 'undefined') page = 0;
+
     //calculate the past 3 months
     const currentDate = new Date()
     const pastSixMonths = new Date(currentDate)
@@ -21,23 +26,37 @@ const getRecent = async (req, res)=>{
 
     //get recents and paginate from the past 3 months
     const recentURL = `${baseURL}/?kevStartDate=${pastSixMonths.toISOString()}&kevEndDate=${currentDate.toISOString()}`
-    let pagedURL = paginate(20, 0, recentURL)
+    let pagedURL = paginate(20, page, recentURL)
     console.log(pagedURL)
-    const results = await fetch(pagedURL)
-    const recents = await results.json()
-
-    res.json(recents)
+    try{
+        const results = await fetch(pagedURL)
+        const recents = await results.json()
+        res.json(recents)
+    }catch (e){
+        console.log(e)
+        res.json({
+            "Code": "500, Internal Server Error",
+        })
+    }
+    
 }
 
 const searchCve = async(req, res)=>{
-    const { keyword } = req.query;
+    const { keyword,page } = req.query;
 
     const searchURL = `${baseURL}?keywordSearch=${keyword}`
-    console.info("getting search reaults at: " + searchURL)
-    let pagedURL = paginate(20, 0, searchURL)
-    const results = await fetch(pagedURL)
-    const searchResults = await results.json()
-    res.json(searchResults)
+    let pagedURL = paginate(20, page, searchURL)
+    console.info("getting search reaults at: " + pagedURL)
+    try{
+        const results = await fetch(pagedURL)
+        const searchResults = await results.json()
+        res.json(searchResults)
+    }catch(e){
+        res.json({
+            "500": "Internal Server Error"
+        })
+    }
+    
 }
 
 const fetchByServerity = async (req, res)=>{
