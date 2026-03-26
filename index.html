@@ -6,6 +6,7 @@
     <title>CVE News</title>
     <link rel="stylesheet" href="style.css">
     <script src="./main.js" type="module" defer></script>
+    <script src="./news.js" type="module" defer></script>
 </head>
 <body>
 
@@ -26,18 +27,61 @@
             <h2>Greetings Hacker</h2>
 
             <div class="side-panel">
-                <h2>Top News</h2>
-                <div class="news-feed">
-                    <h3>Loading...</h3>
-                    <p>Loading...</p>
+                <h2>News</h2>
+                <div class="news-feed" id="news">
+                    <h2>Loading...</h2>
                 </div>
 
             </div>
+
+            <h2>Menu</h2>
+              <div class="menu">
+                <button><ion-icon name="home-sharp"></ion-icon>Home</button>
+                <button><ion-icon name="bar-chart-sharp"></ion-icon>Dashboard</button>
+                <button><ion-icon name="settings-sharp"></ion-icon>Settings</button>
+              </div>
+
+              <div class="aihub">
+
+                <div class="ai-heading">
+                    <h3>AI Hub</h3>
+                </div>
+
+                <div class="chat-body">
+                    <p class="placeholder">your messages appear here</p>
+                </div>
+
+                <div class="chat-tools">
+                    <textarea name="message" id="aimessage" cols="100"></textarea>
+                    <button>Send</button>
+                </div>
+              </div>
         </div>
         <section class="container-parent">
-            <h2 class="main-header" id="resultsTitle">
-                Recent CVEs
-            </h2>
+            <div class="filter-bar">
+                <h2 class="main-header" id="resultsTitle">
+                    Recent CVEs
+                </h2>
+
+                <div class="filters">
+                    <div class="input-group">
+                        <label for="orderby">Order by: </label>
+                        <select name="orderby" id="orderby">
+                            <option value="Date">Date</option>
+                            <option value="Date">Alphabetical</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="order">Order: </label>
+                        <select name="order" id="order">
+                            <option value="Date">Ascending</option>
+                            <option value="Date">Descending</option>
+                        </select>
+                    </div>
+                    <ion-icon name="refresh-circle-sharp"></ion-icon>
+                </div>
+            </div>
             <div class="container" id="container">
                 <div class="card">
                     <h3>Loading...</h3>
@@ -54,6 +98,56 @@
         </div>
         </section>
     </main>
-    
+
+    <!-- modals -->
+     <div id="cve-modal" class="cve-modal">
+        <h2 class="modal-title">Microsoft Office PowerPoint Code Injection Vulnerability
+            <ion-icon id="close-cve-modal" name="close-circle-sharp"></ion-icon>
+        </h2>
+        <h3>CVE-2009-0556</h3>
+        <div class="dates">
+            <p>Published: 2009-04-03</p>
+            <p>Last Modified: 2009-04-03</p>
+        </div>
+        <div class="pellet dynamic">
+            <p>8.5 High</p>
+        </div>
+        <p>CVSS V3: CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H</p>
+        <p><b>Description</b></p>
+        <p>
+            Microsoft Office PowerPoint 2000 SP3, 2002 SP3, and 2003 SP3, and
+             PowerPoint in Microsoft Office 2004 for Mac, allows remote attackers 
+             to execute arbitrary code via a PowerPoint file with an OutlineTextRefAtom 
+             containing an an invalid index value that triggers memory corruption, as 
+             exploited in the wild in April 2009 by 
+            Exploit:Win32/Apptom.gen, aka "Memory Corruption Vulnerability."
+        </p>
+
+        <div class="pocs">
+            <div class="pellet static">
+                <p>
+                    Metasploit
+                </p>
+            </div>
+
+            <div class="pellet static">
+                <p>
+                    EDB
+                </p>
+            </div>
+
+            <div class="pellet static">
+                <p>
+                    OSVDB
+                </p>
+            </div>
+        </div>
+
+        <div class="references">
+            <a href="#">https://evasions.checkpoint.com/techniques/registry.html</a>
+        </div>
+     </div>
+ <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>   
 </body>
 </html>

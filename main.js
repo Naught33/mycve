@@ -1,21 +1,30 @@
-const baseURL = "http://localhost:3000/news"
+const baseURL = "http://localhost:3000/cve"
 
 const container = document.getElementById('container')
 const searchInput = document.getElementById('search')
 const searchbtn = document.getElementById('search-btn')
 const posContainer = document.getElementById('pages')
 const pagerLabel = document.getElementById('pagerTitle')
+const cveModal = document.getElementById('cve-modal')
+const dynamicPellets = document.getElementsByClassName('dynamic');
+
+//imports
+import { checkCve, checkCveReferences } from './msfdb.js'
 
 //globals
 let totalPageCount;
 let mode;
+let modalVisible = false;
+let vulns;
+
 
 //components
 
 
-function createCard(title, cve, desc, date){
+function createCard(title, cve, desc, date, index){
     const card = document.createElement('div');
     card.setAttribute("class", "card")
+    card.setAttribute("data-index", index)
     card.innerHTML = `
 
                     <h3>${title}</h3>
@@ -68,7 +77,98 @@ function removeExistingPagePos(){
     Array.from(existingButtons).forEach(existing=> existing.remove())
 }
 
+//function defs
+function openModal(){
+    if(modalVisible){
+        return;
+    }
+    cveModal.classList.add('show-modal');
+    modalVisible = true;
+}
 
+function closeModal(){
+    if(!modalVisible){
+        return;
+    }
+    cveModal.classList.remove('show-modal');
+    modalVisible = false;
+}
+
+function checkScoreAndReturnClass(score){
+    if (score === 0) return "Informational";
+    if (score <= 3.9) return "Low";
+    if (score <= 6.9) return "Medium";
+    if (score <= 8.9) return "High";
+    return "Critical";
+}
+
+function populateModal(
+    title,
+    id,
+    published,
+    lastModified,
+    baseCvssScore,
+    baseServerity,
+    cvssString,
+    description,
+    references
+){
+
+     const refLinks = references
+        .filter(reference => reference.url) // avoid undefined
+        .map(reference => {
+            return `<a href="${reference.url}" target="_blank" rel="noopener noreferrer">
+                        ${reference.url}
+                    </a>`;
+        })
+        .join('\n');
+    const modalInner = `
+    <h2 class="modal-title">${title}
+            <ion-icon id="close-cve-modal" name="close-circle-sharp"></ion-icon>
+        </h2>
+        <h3>${id}</h3>
+        <div class="dates">
+            <p>Published: ${new Date(published).toDateString()}</p>
+            <p>Last Modified: ${new Date(lastModified).toDateString()}</p>
+        </div>
+        <div class="pellet dynamic ${checkScoreAndReturnClass(parseFloat(baseCvssScore))}">
+            <p>${baseCvssScore + " " + baseServerity}</p>
+        </div>
+        <p>CVSS V3: ${cvssString}</p>
+        <p><b>Description</b></p>
+        <p>
+            ${description}
+        </p>
+
+        <div class="pocs">
+            <div class="pellet static">
+                <p>
+                    Metasploit
+                </p>
+            </div>
+
+            <div class="pellet static">
+                <p>
+                    EDB
+                </p>
+            </div>
+
+            <div class="pellet static">
+                <p>
+                    OSVDB
+                </p>
+            </div>
+        </div>
+        <p><b>References</b></p>
+        <div class="references">
+           ${refLinks || '<p>No references available</p>'}
+        </div>
+    `;
+    cveModal.innerHTML = modalInner;
+    document.getElementById('close-cve-modal').onclick=()=>{
+        closeModal();
+    }
+}
 
 
 
@@ -100,12 +200,13 @@ async function getRecentCVEs(page){
 function getRecentCvesAndDisplay(page){
     mode = 'recent'
     getRecentCVEs(page).then(cves => {
-    console.log(cves)
+    console.log(cves.vulnerabilities)
+    vulns = cves.vulnerabilities
     let totalResults = cves.totalResults;
     totalPageCount = totalResults;
     removeExistingCards()
     cves.vulnerabilities.forEach((element, index) => {
-         createCard(element.cve.cisaVulnerabilityName, element.cve.id, element.cve.descriptions[0].value, element.cve.cisaExploitAdd)
+         createCard(element.cve.cisaVulnerabilityName, element.cve.id, element.cve.descriptions[0].value, element.cve.published, index)
     }); 
     removeExistingPagePos()
     pagerLabel.textContent = `Listing ${page + 1} of ${totalPageCount}`
@@ -177,4 +278,29 @@ searchbtn.addEventListener('click', (e)=>{
     getSearchResultsAndDisplay(0)
     
 })
+
+container.addEventListener('click', e=>{
+    const card = e.target.closest('.card')
+
+    if(card){
+        let baseVuln = (vulns[card.getAttribute('data-index')].cve)
+        console.log(baseVuln);
+        populateModal(
+            baseVuln.cisaVulnerabilityName,
+            baseVuln.id,
+            baseVuln.published,
+            baseVuln.lastModified,
+            baseVuln.metrics.cvssMetricV31[0].cvssData.baseScore,
+            baseVuln.metrics.cvssMetricV31[0].cvssData.baseSeverity,
+            baseVuln.metrics.cvssMetricV31[0].cvssData.vectorString,
+            baseVuln.descriptions[0].value,
+            baseVuln.references
+        )
+        openModal();
+    }
+})
+
+
+
+
 //news section
