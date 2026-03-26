@@ -6,7 +6,7 @@ const {
     searchCve,
     fetchByServerity,
     fetchByDate
-} = require("../controllers/newsController");
+} = require("../controllers/cveController");
 
 
 //routes
